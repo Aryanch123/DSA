@@ -23,6 +23,7 @@ public class Solution {
             if (nums[i] > nums[ind]) {
                 swap(nums, i, ind);
                 break;
+
             }
         }
 
