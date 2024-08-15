@@ -1,0 +1,54 @@
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+
+class LFUCache {
+    private int capacity = 0;
+    private int minFreq = 0;
+    private HashMap<Integer, Integer> keyToValueMap;
+    private HashMap<Integer, Integer> keyToFreqMap;
+    private HashMap<Integer, LinkedHashSet<Integer>> freqToListMap;
+
+    public LFUCache(int capacity) {
+        this.capacity = capacity;
+        minFreq = 0;
+        keyToValueMap = new HashMap<>();
+        keyToFreqMap = new HashMap<>();
+        freqToListMap = new HashMap<>();
+    }
+
+    public int get(int key) {
+        if (!keyToValueMap.containsKey(key)) return -1;
+        int currentFreq = keyToFreqMap.get(key);
+        freqToListMap.get(currentFreq).remove(key);
+        if (currentFreq == minFreq && freqToListMap.get(currentFreq).isEmpty()) {
+            minFreq++;
+            freqToListMap.remove(currentFreq);
+        }
+        freqToListMap.putIfAbsent(currentFreq + 1, new LinkedHashSet<>());
+        freqToListMap.get(currentFreq + 1).add(key);
+        keyToFreqMap.put(key, currentFreq + 1);
+        return keyToValueMap.get(key);
+    }
+
+    public void put(int key, int value) {
+        if (capacity == 0) return;
+        if (keyToValueMap.containsKey(key)) {
+            keyToValueMap.put(key, value);
+            get(key);
+            return;
+        }
+        if (capacity == this.keyToValueMap.size()) {
+            if (freqToListMap.get(minFreq).iterator().hasNext()) {
+                int valueToRemove = freqToListMap.get(minFreq).iterator().next();
+                freqToListMap.get(minFreq).remove(valueToRemove);
+                keyToValueMap.remove(valueToRemove);
+                keyToFreqMap.remove(valueToRemove);
+            }
+        }
+        minFreq = 1;
+        freqToListMap.putIfAbsent(minFreq, new LinkedHashSet<>());
+        freqToListMap.get(minFreq).add(key);
+        keyToFreqMap.put(key, minFreq);
+        keyToValueMap.put(key, value);
+    }
+}
