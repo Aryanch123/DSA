@@ -7,6 +7,8 @@ public class Solve {
 
     private static boolean isSafe(int node, List<Integer>[] G, int[] color, int n, int col) {
         for (int it : G[node]) {
+
+
             if (color[it] == col) return false;
         }
         return true;
