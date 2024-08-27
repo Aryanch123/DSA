@@ -1,7 +1,8 @@
 class Solution {
     private void recurPermute(int index, int[] nums, List < List < Integer >> ans) {
         if (index == nums.length) {
-            // copy the ds to ans
+            // copy the ds to an
+s
             List < Integer > ds = new ArrayList < > ();
             for (int i = 0; i < nums.length; i++) {
                 ds.add(nums[i]);
